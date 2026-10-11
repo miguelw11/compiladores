@@ -26,10 +26,23 @@ def proximo():
     return (caractere, caractere)
 
 
-while True:
-    token = proximo()
+lookahead = proximo()
 
-    if token is None:
-        break
 
-    print(token)
+def match(tipo_esperado):
+    global lookahead
+
+    if lookahead is not None and lookahead[0] == tipo_esperado:
+        token_atual = lookahead
+        lookahead = proximo()
+        return token_atual
+
+    raise SyntaxError(f"Esperado {tipo_esperado}, encontrado {lookahead}")
+
+print("Primeiro token:", lookahead)
+
+match("num")
+print("Após o primeiro match:", lookahead)
+
+match("+")
+print("Após o segundo match:", lookahead)
