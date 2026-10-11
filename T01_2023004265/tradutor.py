@@ -1,4 +1,4 @@
-expressao = "123 + 45 / 5"
+expressao = "123 + 45"
 posicao = 0
 
 
@@ -39,10 +39,57 @@ def match(tipo_esperado):
 
     raise SyntaxError(f"Esperado {tipo_esperado}, encontrado {lookahead}")
 
-print("Primeiro token:", lookahead)
+def fact():
+    if lookahead is not None and lookahead[0] == "num":
+        token = match("num")
+        print(token[1])
 
-match("num")
-print("Após o primeiro match:", lookahead)
+    elif lookahead is not None and lookahead[0] == "(":
+        match("(")
+        expr()
+        match(")")
+    
+    else:
+        raise SyntaxError(f"Esperado um número, encontrado {lookahead}")
 
-match("+")
-print("Após o segundo match:", lookahead)
+def term():
+    fact()
+    T()
+
+def T():
+    if lookahead is not None and lookahead[0] == "*":
+        match("*")
+        fact()
+        print("*")
+        T()
+
+    elif lookahead is not None and lookahead[0] == "/":
+        match("/")
+        fact()
+        print("/")
+        T()
+
+def expr():
+    term()
+    R()
+
+def R():
+    if lookahead is not None and lookahead[0] == "+":
+        match("+")
+        term()
+        print("+")
+        R()
+
+    elif lookahead is not None and lookahead[0] == "-":
+        match("-")
+        term()
+        print("-")
+        R()
+
+expressao = "(9 - 5) * 2"
+posicao = 0
+lookahead = proximo()
+
+expr()
+
+print("Lookahead final:", lookahead)
