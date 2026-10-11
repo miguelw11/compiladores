@@ -1,6 +1,5 @@
 expressao = input("Digite uma expressão matemática: ")
 posicao = 0
-lookahead = proximo()
 saida = []
 
 def proximo():
@@ -28,6 +27,8 @@ def proximo():
 
         return (caractere, caractere)
     raise SyntaxError(f"Caractere inválido: {caractere}")
+
+lookahead = proximo()
 
 def match(tipo_esperado):
     global lookahead
