@@ -58,34 +58,22 @@ def term():
     T()
 
 def T():
-    if lookahead is not None and lookahead[0] == "*":
-        match("*")
+    while lookahead is not None and lookahead[0] in ("*", "/"):
+        operador = lookahead[0]
+        match(operador)
         fact()
-        saida.append("*")
-        T()
-
-    elif lookahead is not None and lookahead[0] == "/":
-        match("/")
-        fact()
-        saida.append("/")
-        T()
+        saida.append(operador)
 
 def expr():
     term()
     R()
 
 def R():
-    if lookahead is not None and lookahead[0] == "+":
-        match("+")
+    while lookahead is not None and lookahead[0] in ("+", "-"):
+        operador = lookahead[0]
+        match(operador)
         term()
-        saida.append("+")
-        R()
-
-    elif lookahead is not None and lookahead[0] == "-":
-        match("-")
-        term()
-        saida.append("-")
-        R()
+        saida.append(operador)
 
 expr()
 
