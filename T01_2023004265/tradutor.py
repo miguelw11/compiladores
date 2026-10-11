@@ -1,6 +1,6 @@
 expressao = "123 + 45"
 posicao = 0
-
+saida = []
 
 def proximo():
     global posicao
@@ -21,10 +21,12 @@ def proximo():
         return ("num", numero)
 
     caractere = expressao[posicao]
-    posicao += 1
 
-    return (caractere, caractere)
+    if caractere in "+-*/()":
+        posicao += 1
 
+        return (caractere, caractere)
+    raise SyntaxError(f"Caractere inválido: {caractere}")
 
 lookahead = proximo()
 
@@ -42,7 +44,7 @@ def match(tipo_esperado):
 def fact():
     if lookahead is not None and lookahead[0] == "num":
         token = match("num")
-        print(token[1])
+        saida.append(token[1])
 
     elif lookahead is not None and lookahead[0] == "(":
         match("(")
@@ -60,13 +62,13 @@ def T():
     if lookahead is not None and lookahead[0] == "*":
         match("*")
         fact()
-        print("*")
+        saida.append("*")
         T()
 
     elif lookahead is not None and lookahead[0] == "/":
         match("/")
         fact()
-        print("/")
+        saida.append("/")
         T()
 
 def expr():
@@ -77,19 +79,23 @@ def R():
     if lookahead is not None and lookahead[0] == "+":
         match("+")
         term()
-        print("+")
+        saida.append("+")
         R()
 
     elif lookahead is not None and lookahead[0] == "-":
         match("-")
         term()
-        print("-")
+        saida.append("-")
         R()
 
-expressao = "(9 - 5) * 2"
+expressao = "9 + ."
 posicao = 0
 lookahead = proximo()
+saida = []
 
 expr()
 
-print("Lookahead final:", lookahead)
+if lookahead is not None:
+    raise SyntaxError(f"Token inesperado: {lookahead}")
+
+print(" ".join(saida))
