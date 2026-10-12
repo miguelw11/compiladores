@@ -130,52 +130,39 @@ def traduzir(linha):
     # Junta os elementos da saída, separados por espaços.
     return " ".join(saida)
 
-
 def main():
-    # Permite informar, no máximo, um arquivo como argumento.
+    # Se um arquivo foi informado, abre-o para leitura.
     if len(sys.argv) > 2:
         print("Uso: python3 tradutor.py [arquivo.txt]", file=sys.stderr)
         sys.exit(1)
 
-    # Se um arquivo foi informado, abre-o para leitura.
     if len(sys.argv) == 2:
         try:
-            arquivo = open(sys.argv[1], encoding="utf-8")
+            with open(sys.argv[1], encoding="utf-8") as arquivo:
+                processar_entrada(arquivo)
         except OSError as erro:
             print(f"Erro ao abrir arquivo: {erro}", file=sys.stderr)
             sys.exit(1)
     else:
         # Sem argumento, lê as expressões da entrada padrão.
-        arquivo = sys.stdin
-
-    # Lê o arquivo ou a entrada padrão, uma linha de cada vez.
-    with arquivo if arquivo is not sys.stdin else _entrada_padrao():
-        for numero_linha, linha in enumerate(arquivo, start=1):
-
-            # Ignora linhas vazias.
-            if not linha.strip():
-                continue
-
-            try:
-                # Traduz a expressão e imprime o resultado.
-                print(traduzir(linha))
-            except SyntaxError as erro:
-                # Mostra o erro sem interromper o processamento das próximas linhas.
-                print(
-                    f"Erro na linha {numero_linha}: {erro}",
-                    file=sys.stderr
-                )
+        processar_entrada(sys.stdin)
 
 
-class _entrada_padrao:
-    # Permite usar a entrada padrão sem fechá-la ao terminar a leitura.
-    def __enter__(self):
-        return sys.stdin
+def processar_entrada(arquivo):
+    # Lê uma expressão por linha e ignora linhas vazias.
+    for numero_linha, linha in enumerate(arquivo, start=1):
+        if not linha.strip():
+            continue
 
-    def __exit__(self, tipo, valor, traceback):
-        return False
+        try:
+            print(traduzir(linha))
+        except SyntaxError as erro:
+            print(
+                f"Erro na linha {numero_linha}: {erro}",
+                file=sys.stderr
+            )
 
 
-# Executa o programa principal somente quando este arquivo é executado diretamente.
 if __name__ == "__main__":
     main()
+
